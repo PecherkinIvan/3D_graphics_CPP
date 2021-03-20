@@ -1,2 +1,7 @@
 ﻿  main.cpp
-  Engine.vcxproj -> C:\OpenGL\Engine\x64\Debug\Engine.exe
+  Window.cpp
+C:\OpenGL\Engine\src\Window.cpp(3,10): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+C:\OpenGL\Engine\src\Window.h(4,17): warning C4099: GLFWwindow: имя типа, ранее отображенное с помощью "struct", теперь отображено с помощью "class"
+C:\OpenGL\Engine\libs\include\GLFW\glfw3.h(1182): message : см. объявление "GLFWwindow"
+C:\OpenGL\Engine\src\Window.cpp(6,27): error C2761: "GLFWwindow *Window::window": повторное объявление члена запрещено.
+  Создание кода...
