@@ -1,44 +1,34 @@
 #include <iostream>
-					/// Время 8:17 (https://www.youtube.com/watch?v=Ihn-9EYWOEs&t=216s)
-#define GLEW_STATIC
+				      // Надо исправить, здесь весь код из первого видео (Где-то есть ошибка, возможно в атребутах или нет поключенной библеотеки)
+#define GLEW_STATIC  // Примечание Window, Events это классы 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-//#include "window/Window.h"
+#include "window/Window.h"
+#include "window/Events.h"
 
-int main()
-{
+int WIDTH = 1280;
+int HEIGHT = 720;
 
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+int main() {
+	Window::initialize(WIDTH, HEIGHT, "Window 2.0");
+	Events::initialize();
 
-	GLFWwindow* window = glfwCreateWindow(1280, 720, "Cube", nullptr, nullptr);
-	if (window == nullptr)
-	{
-		std::cout << "Failed_0" <<std::endl;
-		glfwTerminate();
-		return -1;
+	glClearColor(0.6f, 0.62f, 0.65f, 1);
+
+	while (!Window::isShouldClose()) {
+		Events::pullEvents();
+		if (Events::jpressed(GLFW_KEY_ESCAPE)) {
+			Window::setShouldClose(true);
+		}
+		if (Events::jclicked(GLFW_MOUSE_BUTTON_1)) {
+			glClearColor(0.8f, 0.4f, 0.2f, 1);
+		}
+
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		Window::swapBuffers();
 	}
-	glfwMakeContextCurrent(window);
-	/*
-	glewExperimental = GL_TRUE;  // При запуске выдаст ошибу
-	if (glfwInit() != GLEW_OK)
-	{
-		std::cout << "Failed_1" << std::endl;
-		return -1;
-	}*/
-
-	glViewport(0, 0, 1280, 720);
-
-	while (!glfwWindowShouldClose(window))
-	{
-		glfwPollEvents();
-		glfwSwapBuffers(window);
-	}
-
-	glfwTerminate();
+	Window::terminate();
 	return 0;
 }

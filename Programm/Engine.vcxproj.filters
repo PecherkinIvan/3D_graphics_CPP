@@ -2,9 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Window.cpp" />
+    <ClCompile Include="src\window\Window.cpp" />
+    <ClCompile Include="src\window\Events.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Window.h" />
+    <ClInclude Include="src\window\Window.h" />
+    <ClInclude Include="src\window\Events.h" />
   </ItemGroup>
 </Project>
