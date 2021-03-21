@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "graphics/Shader.h"
 #include "window/Window.h"
 #include "window/Events.h"
 
@@ -15,6 +16,13 @@ int main() {
 	Events::initialize();
 
 	glClearColor(0.6f, 0.62f, 0.65f, 1);
+
+	Shader* shader = load_shader("res/main.glslf", "res/main.glslv");
+	if(shader == nullptr) {
+		std::cerr << "failed to load shader" << std::endl;
+		Window::terminate();
+		return 1;
+	}
 
 	while (!Window::isShouldClose()) {
 		Events::pullEvents();
