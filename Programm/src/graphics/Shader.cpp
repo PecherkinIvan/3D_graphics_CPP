@@ -8,20 +8,23 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-Shader::Shader(unsigned int id) : id(id)
-{
-	
+
+/* Назначение id для шейдера */
+Shader::Shader(unsigned int id) : id(id) { 
 }
 
+/* Удаление шейдеров и очищение памяти */
 Shader::~Shader() {
 	glDeleteProgram(id);
 }
 
+/* Активация шейдеров */
 void Shader::use() {
 	glUseProgram(id);
 }
 
-Shader* load_shader(std::string vertexFile, std::string fragmentFile){
+/*------------Функция для загрузки шейдеров-------------------------*/
+Shader* load_shader(std::string vertexFile, std::string fragmentFile){ 
 	std::string vertexCode;
 	std::string fragmentCode;
 	std::ifstream vShaderFile;
@@ -54,7 +57,7 @@ Shader* load_shader(std::string vertexFile, std::string fragmentFile){
 	GLint success;
 	GLchar infoLog[512];
 
-	// Vertex Shader
+	/*------------------Шейдер вершин---------------------*/
 	vertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex, 1, &vShaderCode, nullptr);
 	glCompileShader(vertex);
@@ -65,8 +68,9 @@ Shader* load_shader(std::string vertexFile, std::string fragmentFile){
 		std::cerr << infoLog << std::endl;
 		return nullptr;
 	}
+	/*---------------------------------------------------*/
 
-	// Fragment Shader
+	/*---------Фрагментный шейдер--------------------------*/
 	fragment = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment, 1, &fShaderCode, nullptr);
 	glCompileShader(fragment);
@@ -77,8 +81,9 @@ Shader* load_shader(std::string vertexFile, std::string fragmentFile){
 		std::cerr << infoLog << std::endl;
 		return nullptr;
 	}
+	/*----------------------------------------------------*/
 
-	//Shader program
+	/*----------------Шейдерная программа----------------*/
 	GLuint id = glCreateProgram();
 	glAttachShader(id, vertex);
 	glAttachShader(id, fragment);
@@ -96,8 +101,12 @@ Shader* load_shader(std::string vertexFile, std::string fragmentFile){
 		return nullptr;
 	}
 
-	glDeleteShader(vertex);
+	/*-------------------------------------------------*/
+
+	/* Очистка памяти после работы */
+	glDeleteShader(vertex); 
 	glDeleteShader(fragment);
-	
+	/*----------------------------*/
+
 	return new Shader(id);
 }

@@ -1,2 +1,9 @@
 ﻿  main.cpp
+  Events.cpp
+A:\Repositories\3D_graphics_CPP\Programm\src\window\Events.cpp(23,37): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+A:\Repositories\3D_graphics_CPP\Programm\src\window\Events.cpp(24,37): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+A:\Repositories\3D_graphics_CPP\Programm\src\window\Events.cpp(29,14): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+A:\Repositories\3D_graphics_CPP\Programm\src\window\Events.cpp(30,14): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+  Window.cpp
+  Создание кода...
   Engine.vcxproj -> A:\Repositories\3D_graphics_CPP\Programm\x64\Debug\Engine.exe

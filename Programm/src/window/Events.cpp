@@ -17,6 +17,7 @@ bool Events::_cursor_started = false;
 
 #define _MOUSE_BUTTONS 1024
 
+/* Проверка позиции курсора */
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
 	if (Events::_cursor_started) {
 		Events::deltaX += xpos - Events::x;
@@ -29,6 +30,7 @@ void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
 	Events::y = ypos;
 }
 
+/* Проверка нажатия кнопок мыши */
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mode) {
 	if (action == GLFW_PRESS) {
 		Events::_keys[_MOUSE_BUTTONS + button] = true;
@@ -39,6 +41,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mode)
 		Events::_frames[_MOUSE_BUTTONS + button] = Events::_current;
 	}
 }
+
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
 	if (action == GLFW_PRESS) {
