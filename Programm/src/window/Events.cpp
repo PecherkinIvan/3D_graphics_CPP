@@ -2,6 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <string.h>
 
+#define GLEW_STATIC
+
+
 bool* Events::_keys;
 uint* Events::_frames;
 uint Events::_current = 0;
