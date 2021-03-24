@@ -4,10 +4,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "png/png.h"
 #include "graphics/Shader.h"
+#include "graphics/texture.h"
 #include "window/Window.h"
 #include "window/Events.h"
+#include "loaders/png_loading.h"
+
 
 int WIDTH = 1280; //Ширина экрана
 int HEIGHT = 720; //Высота экрана
@@ -31,6 +33,19 @@ int main() {
 		Window::terminate(); //Закрытие окна
 		return 1;
 	}
+
+	Texture* texture = load_texture("res/img.png");
+	if (texture == nullptr) {
+		std::cerr << "failed to load texture" << std::endl;
+		delete shader;
+		Window::terminate(); //Закрытие окна
+		return 1;
+	}
+
+
+
+
+
 	/*Создание VAO и VBO
 		
 		VBO - средство OpenGL, которое позваляет загружать в память GPU(Видеокарты) определенные данные (Координаты вершин, цвета, нормали)
@@ -80,7 +95,8 @@ int main() {
 	}
 	/*=========Конец основного цикла игры==============*/
 
-	delete shader; // Отключение шейдеров и очистка памяти
+	delete shader; // Удаление шейдеров и очистка памяти
+	delete texture; // Удаление текстур и очистка памяти
 	glDeleteBuffers(1, &VBO); // Удаление буфера и очистка памяти
 	glDeleteVertexArrays(1, &VAO); // Удаление массива и очистка памяти
 	Window::terminate(); // Закрытие окна
