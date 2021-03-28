@@ -15,10 +15,14 @@ int WIDTH = 1280; //Ширина экрана
 int HEIGHT = 720; //Высота экрана
 
 float vertices[] = { // Массив вершинных данных
-	-1.0f, -1.0f, 0.0f,
-	-1.0f, 0.0f, 0.0f,
-	1.0f, 0.0f, 0.0f,
-	1.0f, -1.0f, 0.0f,
+	//x    y     z     u     v
+   -1.0f,-1.0f, 0.0f, 0.0f, 0.0f,  // NEW
+	1.0f,-1.0f, 0.0f, 1.0f, 0.0f,
+   -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+
+	1.0f,-1.0f, 0.0f, 1.0f, 0.0f,
+	1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+   -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 };
 
 int main() {
@@ -61,7 +65,7 @@ int main() {
 	glBindVertexArray(VAO); // Привязываем VAO «ок, сейчас мы будем что-то делать вот с этим VAO»
 	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Связываем буффер с точкой связывания «ок, сейчас мы будем что-то делать вот с этим VBO»
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // Выделение памяти и загрузка данных в неё. Аргументы: 1) Точка связывания | 2) Размер массива в байтах | 3) Массив верщин | 4) 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)(0 * sizeof(GLfloat))); // Процедура говорит от куда брать данные для массива атрибутов (Vertex attribute array).
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(0 * sizeof(GLfloat))); // Процедура говорит от куда брать данные для массива атрибутов (Vertex attribute array).
 																									     // Аргументы: 1) Индекс вершинного массива | 
 																										// 2) Длинна вершинного атрибута (В значении) кол-во координат (3 - трехмерный вектор)
 																									   // 3) Тип данных | 4) Нужно ли автоматически нормализововать или они уже нормализованные или это не требуется | 
@@ -69,8 +73,12 @@ int main() {
 																									 // 6) НА сколько сдвинут вершинный атрибут относительно начала в байтах
 	glEnableVertexAttribArray(0); // Включает указанный вершинный атрибут (vertex attribute array)
 
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));   ///  NEW
+	glEnableVertexAttribArray(1);																			///  NEW
+
 	glBindVertexArray(0); // Отвязывание VAO от точки связывания
 
+	glClearColor(0.6f, 0.62f, 0.65f, 1);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
@@ -93,7 +101,7 @@ int main() {
 		shader->use(); // Запуск шейдера
 		texture->bind(); // Превязываем текстуру
 		glBindVertexArray(VAO); // Запуск VAO
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 4); // Отрисовка примитивов, параметры: 1) Что отрисововать (Тип примитива) | 2) С какой вершины начать рисовать | 3) Кол-во вершин, которые надо отрисовать
+		glDrawArrays(GL_TRIANGLES, 0, 6); // Отрисовка примитивов, параметры: 1) Что отрисововать (Тип примитива) | 2) С какой вершины начать рисовать | 3) Кол-во вершин, которые надо отрисовать
 		glBindVertexArray(0); // Отвязывание VAO от точки связывания
 		/*----Конец отрисовки вершин--*/
 
