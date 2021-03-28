@@ -1,14 +1,12 @@
 #include "png_loading.h"
 
+#include <iostream>
+#include <GL/glew.h>
+#include <png.h>
+#include "../graphics/Texture.h"
+
 #pragma warning(disable : 4996)
 
-#include <iostream>
-#include "GL/glew.h"
-#include "png/png.h"
-#include "../graphics/texture.h"
-
-
-/* УКРАЛИ!!! ВОРЫ!!! В ПЕЧЬ! */
 int _png_load(const char* file, int* width, int* height) {
     FILE* f;
     int is_png, bit_depth, color_type, row_bytes;
@@ -20,7 +18,7 @@ int _png_load(const char* file, int* width, int* height) {
     GLuint texture;
     int alpha;
 
-    if (!(f = fopen(file, "r"))) {
+    if (!(f = fopen(file, "rb"))) {
         return 0;
     }
     fread(header, 1, 8, f);
@@ -108,14 +106,12 @@ int _png_load(const char* file, int* width, int* height) {
     fclose(f);
     return texture;
 }
-/* Краденый код закончился */
 
-
-Texture* load_png_texture(std::string filename) {
+Texture* load_texture(std::string filename) {
     int width, height;
     GLuint texture = _png_load(filename.c_str(), &width, &height);
     if (texture == 0) {
-        std::cerr << "Clould not load texture" << std::endl;
+        std::cerr << "Could not load texture " << filename << std::endl;
         return nullptr;
     }
     return new Texture(texture, width, height);

@@ -2,10 +2,14 @@
 #extension GL_ARB_separate_shader_objects : enable
 
 
-in vec3 position;
+layout (location = 0) in vec3 v_position;
+layout (location = 1) in vec2 v_texCoord;
+
 out vec4 a_color;
+out vec2 a_texCoord;
 
 void main(){
-	a_color = vec4(0, 1, 0, 1);
-	gl_Position = vec4(position, 1);
+	a_color = vec4(1.0f,1.0f,1.0f,1.0f);
+	a_texCoord = v_texCoord;
+	gl_Position = vec4(v_position, 1.0);
 }

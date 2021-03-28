@@ -71,6 +71,10 @@ int main() {
 
 	glBindVertexArray(0); // Отвязывание VAO от точки связывания
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+
 	/*=============Основной цикл игры====================*/
 	while (!Window::isShouldClose()) { 
 		Events::pullEvents();
@@ -83,8 +87,11 @@ int main() {
 
 		glClear(GL_COLOR_BUFFER_BIT);	// Изменение цвета фона
 
+		
+		
 		/*------Отрисовка вершин-------*/
 		shader->use(); // Запуск шейдера
+		texture->bind(); // Превязываем текстуру
 		glBindVertexArray(VAO); // Запуск VAO
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4); // Отрисовка примитивов, параметры: 1) Что отрисововать (Тип примитива) | 2) С какой вершины начать рисовать | 3) Кол-во вершин, которые надо отрисовать
 		glBindVertexArray(0); // Отвязывание VAO от точки связывания

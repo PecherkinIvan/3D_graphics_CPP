@@ -1,5 +1,5 @@
-#include "texture.h"
-#include "GL/glew.h"
+#include "Texture.h"
+#include <GL/glew.h>
 
 Texture::Texture(unsigned int id, int width, int height) : id(id), width(width), height(height) {
 }
@@ -11,7 +11,3 @@ Texture::~Texture() {
 void Texture::bind() {
 	glBindTexture(GL_TEXTURE_2D, id);
 }
-
-/*Texture* load_texture(std::string filename, int width, int height) {
-
-}*/

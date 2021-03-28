@@ -16,5 +16,4 @@ public:
 
 extern Texture* load_texture(std::string filename);
 
-#endif // !GRAPHICS_TEXTURE_H
-
+#endif /* GRAPHICS_TEXTURE_H_ */
