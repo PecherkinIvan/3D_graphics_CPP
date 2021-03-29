@@ -5,9 +5,10 @@
 #include <iostream>
 #include <sstream>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 
 /* Назначение id для шейдера */
 Shader::Shader(unsigned int id) : id(id) { 
@@ -21,6 +22,11 @@ Shader::~Shader() {
 /* Активация шейдеров */
 void Shader::use() {
 	glUseProgram(id);
+}
+
+void Shader::uniformMatrix(std::string name, glm::mat4 matrix) {
+	GLuint transformLoc = glGetUniformLocation(id, name.c_str());
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 /*------------Функция для загрузки шейдеров-------------------------*/

@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <GL/glew.h>
-#include <png.h>
+#include <libpng16/png.h>
 #include "../graphics/Texture.h"
 
 #pragma warning(disable : 4996)

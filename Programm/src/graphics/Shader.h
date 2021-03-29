@@ -2,6 +2,8 @@
 #define GRAPHICS_SHADER_H_
 
 #include <string>
+#include <glm/glm.hpp>
+
 
 class Shader
 {
@@ -11,6 +13,8 @@ class Shader
 		~Shader();
 
 		void use();
+		void uniformMatrix(std::string name, glm::mat4 matrix);
+
 };
 
 extern Shader* load_shader(std::string vertexFile, std::string fragmentFile);

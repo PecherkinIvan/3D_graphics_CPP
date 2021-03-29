@@ -1,2 +1,4 @@
 ﻿  main.cpp
-  Engine.vcxproj -> C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\x64\Debug\Engine.exe
+A:\Repositories\3D_graphics_CPP\Programm\src\main.cpp(98,17): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+A:\Repositories\3D_graphics_CPP\Programm\src\main.cpp(109,21): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+  Engine.vcxproj -> A:\Repositories\3D_graphics_CPP\Programm\x64\Debug\Engine.exe

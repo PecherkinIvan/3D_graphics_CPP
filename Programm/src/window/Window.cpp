@@ -1,26 +1,26 @@
 #include <iostream>
 
-#define GLEW_STATIC
+//#define GLEW_STATIC
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "Window.h"
 
-
 GLFWwindow* Window::window;
+int Window::width = 0;
+int Window::height = 0;
 
 int Window::initialize(int width, int height, const char* title) {
-	glfwInit(); //Запуск GLFW
-	/*-------------Версия OpenGL------------------*/
+	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	/*--------------------------------------------*/
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
-	window = glfwCreateWindow(width, height, title, nullptr, nullptr); // Создание окна. Аргументы: 1) Ширина окна | 2) Высота окна | 3) Название окна
+	window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	if (window == nullptr) {
 		std::cerr << "Failed to create GLFW Window" << std::endl;
-		glfwTerminate(); // Закрытие окна
+		glfwTerminate();
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
@@ -31,15 +31,19 @@ int Window::initialize(int width, int height, const char* title) {
 		return -1;
 	}
 	glViewport(0, 0, width, height);
+
+	Window::width = width;
+	Window::height = height;
 	return 0;
 }
 
+void Window::setCursorMode(int mode) {
+	glfwSetInputMode(window, GLFW_CURSOR, mode);
+}
 
-/* Закрытие окна  */
 void Window::terminate() {
 	glfwTerminate();
 }
-
 
 bool Window::isShouldClose() {
 	return glfwWindowShouldClose(window);

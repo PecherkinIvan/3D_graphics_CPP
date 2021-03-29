@@ -117,12 +117,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>A:\Repositories\3D_graphics_CPP\Programm\libs\include;C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>A:\Repositories\3D_graphics_CPP\Programm\libs\lib;C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\window\camera.cpp" />
     <ClCompile Include="src\loaders\png_loading.cpp" />
     <ClCompile Include="src\graphics\Shader.cpp" />
     <ClCompile Include="src\window\Events.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="src\graphics\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\window\camera.h" />
     <ClInclude Include="src\loaders\png_loading.h" />
     <ClInclude Include="src\graphics\Shader.h" />
     <ClInclude Include="src\window\Events.h" />

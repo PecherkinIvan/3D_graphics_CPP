@@ -7,6 +7,7 @@
     <ClCompile Include="src\graphics\Shader.cpp" />
     <ClCompile Include="src\graphics\texture.cpp" />
     <ClCompile Include="src\loaders\png_loading.cpp" />
+    <ClCompile Include="src\window\camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\Window.h" />
@@ -14,5 +15,6 @@
     <ClInclude Include="src\graphics\Shader.h" />
     <ClInclude Include="src\graphics\texture.h" />
     <ClInclude Include="src\loaders\png_loading.h" />
+    <ClInclude Include="src\window\camera.h" />
   </ItemGroup>
 </Project>

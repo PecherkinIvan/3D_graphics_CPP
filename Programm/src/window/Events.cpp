@@ -1,9 +1,7 @@
 #include "Events.h"
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <string.h>
-
-#define GLEW_STATIC
-
 
 bool* Events::_keys;
 uint* Events::_frames;
@@ -17,7 +15,6 @@ bool Events::_cursor_started = false;
 
 #define _MOUSE_BUTTONS 1024
 
-/* Проверка позиции курсора */
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
 	if (Events::_cursor_started) {
 		Events::deltaX += xpos - Events::x;
@@ -30,7 +27,6 @@ void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
 	Events::y = ypos;
 }
 
-/* Проверка нажатия кнопок мыши */
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mode) {
 	if (action == GLFW_PRESS) {
 		Events::_keys[_MOUSE_BUTTONS + button] = true;
@@ -42,7 +38,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mode)
 	}
 }
 
-
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
 	if (action == GLFW_PRESS) {
 		Events::_keys[key] = true;
@@ -52,6 +47,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		Events::_keys[key] = false;
 		Events::_frames[key] = Events::_current;
 	}
+}
+
+void window_size_callback(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
+	Window::width = width;
+	Window::height = height;
 }
 
 int Events::initialize() {
@@ -65,6 +66,7 @@ int Events::initialize() {
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetCursorPosCallback(window, cursor_position_callback);
+	glfwSetWindowSizeCallback(window, window_size_callback);
 	return 0;
 }
 
@@ -88,6 +90,11 @@ bool Events::clicked(int button) {
 bool Events::jclicked(int button) {
 	int index = _MOUSE_BUTTONS + button;
 	return _keys[index] && _frames[index] == _current;
+}
+
+void Events::toogleCursor() {
+	_cursor_locked = !_cursor_locked;
+	Window::setCursorMode(_cursor_locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
 
 void Events::pullEvents() {
