@@ -8,6 +8,10 @@
     <ClCompile Include="src\graphics\texture.cpp" />
     <ClCompile Include="src\loaders\png_loading.cpp" />
     <ClCompile Include="src\window\camera.cpp" />
+    <ClCompile Include="src\graphics\Mesh.cpp" />
+    <ClCompile Include="src\graphics\VoxelRenderer.cpp" />
+    <ClCompile Include="src\voxels\voxel.cpp" />
+    <ClCompile Include="src\voxels\Chunk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\Window.h" />
@@ -16,5 +20,9 @@
     <ClInclude Include="src\graphics\texture.h" />
     <ClInclude Include="src\loaders\png_loading.h" />
     <ClInclude Include="src\window\camera.h" />
+    <ClInclude Include="src\graphics\Mesh.h" />
+    <ClInclude Include="src\graphics\VoxelRenderer.h" />
+    <ClInclude Include="src\voxels\voxel.h" />
+    <ClInclude Include="src\voxels\Chunk.h" />
   </ItemGroup>
 </Project>

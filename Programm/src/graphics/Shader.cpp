@@ -10,16 +10,13 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-/* Назначение id для шейдера */
-Shader::Shader(unsigned int id) : id(id) { 
+Shader::Shader(unsigned int id) : id(id) {
 }
 
-/* Удаление шейдеров и очищение памяти */
 Shader::~Shader() {
 	glDeleteProgram(id);
 }
 
-/* Активация шейдеров */
 void Shader::use() {
 	glUseProgram(id);
 }
@@ -29,8 +26,9 @@ void Shader::uniformMatrix(std::string name, glm::mat4 matrix) {
 	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
-/*------------Функция для загрузки шейдеров-------------------------*/
-Shader* load_shader(std::string vertexFile, std::string fragmentFile){ 
+
+Shader* load_shader(std::string vertexFile, std::string fragmentFile) {
+	// Reading Files
 	std::string vertexCode;
 	std::string fragmentCode;
 	std::ifstream vShaderFile;
@@ -63,7 +61,7 @@ Shader* load_shader(std::string vertexFile, std::string fragmentFile){
 	GLint success;
 	GLchar infoLog[512];
 
-	/*------------------Шейдер вершин---------------------*/
+	// Vertex Shader
 	vertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex, 1, &vShaderCode, nullptr);
 	glCompileShader(vertex);
@@ -74,9 +72,8 @@ Shader* load_shader(std::string vertexFile, std::string fragmentFile){
 		std::cerr << infoLog << std::endl;
 		return nullptr;
 	}
-	/*---------------------------------------------------*/
 
-	/*---------Фрагментный шейдер--------------------------*/
+	// Fragment Shader
 	fragment = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment, 1, &fShaderCode, nullptr);
 	glCompileShader(fragment);
@@ -87,9 +84,8 @@ Shader* load_shader(std::string vertexFile, std::string fragmentFile){
 		std::cerr << infoLog << std::endl;
 		return nullptr;
 	}
-	/*----------------------------------------------------*/
 
-	/*----------------Шейдерная программа----------------*/
+	// Shader Program
 	GLuint id = glCreateProgram();
 	glAttachShader(id, vertex);
 	glAttachShader(id, fragment);
@@ -100,19 +96,14 @@ Shader* load_shader(std::string vertexFile, std::string fragmentFile){
 		glGetProgramInfoLog(id, 512, nullptr, infoLog);
 		std::cerr << "SHADER::PROGRAM: linking failed" << std::endl;
 		std::cerr << infoLog << std::endl;
-		return nullptr;
 
 		glDeleteShader(vertex);
 		glDeleteShader(fragment);
 		return nullptr;
 	}
 
-	/*-------------------------------------------------*/
-
-	/* Очистка памяти после работы */
-	glDeleteShader(vertex); 
+	glDeleteShader(vertex);
 	glDeleteShader(fragment);
-	/*----------------------------*/
 
 	return new Shader(id);
 }
