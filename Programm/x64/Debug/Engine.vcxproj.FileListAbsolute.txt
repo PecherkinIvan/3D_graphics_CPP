@@ -8,5 +8,6 @@ C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\x64
 C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\x64\Debug\libpng16d.dll
 C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\x64\Debug\zlibd1.dll
 A:\Repositories\3D_graphics_CPP\Programm\x64\Debug\Engine.vcxproj.CopyComplete
+A:\Repositories\3D_graphics_CPP\Programm\x64\Debug\glew32d.dll
 A:\Repositories\3D_graphics_CPP\Programm\x64\Debug\libpng16d.dll
 A:\Repositories\3D_graphics_CPP\Programm\x64\Debug\zlibd1.dll
