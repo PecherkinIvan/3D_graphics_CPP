@@ -1,2 +1,5 @@
 /documents/*
 /programm/libs/**
+/programm/.vs/**
+/programm/Debug/**
+/programm/x64/**

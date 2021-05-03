@@ -7,30 +7,37 @@
 /*---------GLM---------*/
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 using namespace glm;
 /*-------------------*/
 
 #include "graphics/Shader.h"
 #include "graphics/texture.h"
+#include "graphics/Mesh.h"
+#include "graphics/voxel_renderer.h"
 #include "window/Window.h"
 #include "window/Events.h"
 #include "window/camera.h"
 #include "loaders/png_loading.h"
-
+#include "voxels/voxel.h"
+#include "voxels/Chunk.h"
+#include "voxels/Chunks.h"
 
 int WIDTH = 1280; //Ширина экрана
 int HEIGHT = 720; //Высота экрана
 
-float vertices[] = { // Массив вершинных данных
-	//x    y     z     u     v
-   -1.0f,-1.0f, 0.0f, 0.0f, 0.0f,  // NEW
-	1.0f,-1.0f, 0.0f, 1.0f, 0.0f,
-   -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+float vertices[] = {
+	// x    y
+   -0.01f,-0.01f,
+	0.01f, 0.01f,
 
-	1.0f,-1.0f, 0.0f, 1.0f, 0.0f,
-	1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-   -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+   -0.01f, 0.01f,
+	0.01f,-0.01f,
+};
+
+int attrs[] = {
+		2,  0 //null terminator
 };
 
 int main() {
@@ -46,7 +53,14 @@ int main() {
 		return 1;
 	}
 
-	Texture* texture = load_texture("res/img.png");
+	Shader* crosshairShader = load_shader("res/crosshairvert.glsl", "res/crosshairfrag.glsl");
+	if (crosshairShader == nullptr) {
+		std::cerr << "failed to load crosshair shader" << std::endl;
+		Window::terminate();
+		return 1;
+	}
+
+	Texture* texture = load_texture("res/block.png");
 	if (texture == nullptr) {
 		std::cerr << "failed to load texture" << std::endl;
 		delete shader;
@@ -54,46 +68,24 @@ int main() {
 		return 1;
 	}
 
-
-
-
-
-	/*Создание VAO и VBO
-		
-		VBO - средство OpenGL, которое позваляет загружать в память GPU(Видеокарты) определенные данные (Координаты вершин, цвета, нормали)
-
-		VAO - "Массив" в котором хранится информация о том, какую часть VBO использовать и как эти данные нужно интерпритировать
-
-	*/ 
-	GLuint VAO, VBO; 
+	Chunks* chunks = new  Chunks(8, 1, 8);
+	Mesh** meshes = new Mesh * [chunks->volume];
+	for (size_t i = 0; i < chunks->volume; i++)
+		meshes[i] = nullptr;
+	VoxelRenderer renderer(1024 * 1024 * 8);
 	
-	glGenVertexArrays(1, &VAO); // Создание объекта вершинных массивов
-	glGenBuffers(1, &VBO);	// Создание вершинного буффера
 
-	glBindVertexArray(VAO); // Привязываем VAO «ок, сейчас мы будем что-то делать вот с этим VAO»
-	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Связываем буффер с точкой связывания «ок, сейчас мы будем что-то делать вот с этим VBO»
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // Выделение памяти и загрузка данных в неё. Аргументы: 1) Точка связывания | 2) Размер массива в байтах | 3) Массив верщин | 4) 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(0 * sizeof(GLfloat))); // Процедура говорит от куда брать данные для массива атрибутов (Vertex attribute array).
-																									     // Аргументы: 1) Индекс вершинного массива | 
-																										// 2) Длинна вершинного атрибута (В значении) кол-во координат (3 - трехмерный вектор)
-																									   // 3) Тип данных | 4) Нужно ли автоматически нормализововать или они уже нормализованные или это не требуется | 
-																									  // 5) Длина шага вершинных данных, длина всех данных на одну вершину в байтах
-																									 // 6) НА сколько сдвинут вершинный атрибут относительно начала в байтах
-	glEnableVertexAttribArray(0); // Включает указанный вершинный атрибут (vertex attribute array)
-
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));   ///  NEW
-	glEnableVertexAttribArray(1);																			///  NEW
-
-	glBindVertexArray(0); // Отвязывание VAO от точки связывания
+	
 
 	glClearColor(0.6f, 0.62f, 0.65f, 1);
 
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 
+	Mesh* crosshair = new Mesh(vertices, 4, attrs);
 	Camera* camera = new Camera(vec3(0, 0, 1), radians(90.0f));
-	mat4 model(1.0f);
-	model = translate(model, vec3(0.5f, 0, 0));
 
 	float lastTime = glfwGetTime();
 	float delta = 0.0f;
@@ -113,10 +105,7 @@ int main() {
 		//Events::pullEvents();
 		if (Events::jpressed(GLFW_KEY_ESCAPE)) {
 			Window::setShouldClose(true); 
-		}
-		if (Events::jclicked(GLFW_MOUSE_BUTTON_1)) {
-			glClearColor(0.8f, 0.4f, 0.2f, 1);
-		}
+		}	
 
 		if (Events::jpressed(GLFW_KEY_TAB)) {
 			Events::toogleCursor();
@@ -150,20 +139,71 @@ int main() {
 			camera->rotate(camY, camX, 0);
 		}
 
-		glClear(GL_COLOR_BUFFER_BIT);	// Изменение цвета фона
 
-		
-		
+		{
+			vec3 end;
+			vec3 norm;
+			vec3 iend;
+			voxel* vox = chunks->rayCast(camera->position, camera->front, 10.0f, end, norm, iend);
+			if (vox != nullptr) {
+				if (Events::jclicked(GLFW_MOUSE_BUTTON_1)) {
+					chunks->set((int)iend.x, (int)iend.y, (int)iend.z, 0);
+				}
+				if (Events::jclicked(GLFW_MOUSE_BUTTON_2)) {
+					chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), 2);
+				}
+			}
+		}
+
+
+		Chunk* closes[27];
+		for (size_t i = 0; i < chunks->volume; i++) {
+			Chunk* chunk = chunks->chunks[i];
+			if (!chunk->modified)
+				continue;
+			chunk->modified = false;
+			if (meshes[i] != nullptr)
+				delete meshes[i];
+
+			for (int i = 0; i < 27; i++)
+				closes[i] = nullptr;
+			for (size_t j = 0; j < chunks->volume; j++) {
+				Chunk* other = chunks->chunks[j];
+
+				int ox = other->x - chunk->x;
+				int oy = other->y - chunk->y;
+				int oz = other->z - chunk->z;
+
+				if (abs(ox) > 1 || abs(oy) > 1 || abs(oz) > 1)
+					continue;
+
+				ox += 1;
+				oy += 1;
+				oz += 1;
+				closes[(oy * 3 + oz) * 3 + ox] = other;
+			}
+			Mesh* mesh = renderer.render(chunk, (const Chunk**)closes);
+			meshes[i] = mesh;
+		}
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Изменение цвета фона
+
 		/*------Отрисовка вершин-------*/
-		shader->use(); // Запуск шейдера
-		shader->uniformMatrix("model", model);
+		shader->use(); // Запуск шейдера		
 		shader->uniformMatrix("projview", camera->getProjection()*camera->getView());
 		texture->bind(); // Превязываем текстуру
-		glBindVertexArray(VAO); // Запуск VAO
-		glDrawArrays(GL_TRIANGLES, 0, 6); // Отрисовка примитивов, параметры: 1) Что отрисововать (Тип примитива) | 2) С какой вершины начать рисовать | 3) Кол-во вершин, которые надо отрисовать
-		glBindVertexArray(0); // Отвязывание VAO от точки связывания
-		/*----Конец отрисовки вершин--*/
+		mat4 model(1.0f);
+		for (size_t i = 0; i < chunks->volume; i++){
+			Chunk* chunk = chunks->chunks[i];
+			Mesh* mesh = meshes[i];
+			model = glm::translate(mat4(1.0f), vec3(chunk->x*CHUNK_W+0.5f, chunk->y*CHUNK_H+0.5f, chunk->z*CHUNK_D+0.5f));
+			shader->uniformMatrix("model", model);
+			mesh->draw(GL_TRIANGLES);
+		}
 
+		crosshairShader->use();
+		crosshair->draw(GL_LINES);
+		
 		Window::swapBuffers();
 		Events::pullEvents();
 	}
@@ -171,8 +211,11 @@ int main() {
 
 	delete shader; // Удаление шейдеров и очистка памяти
 	delete texture; // Удаление текстур и очистка памяти
-	glDeleteBuffers(1, &VBO); // Удаление буфера и очистка памяти
-	glDeleteVertexArrays(1, &VAO); // Удаление массива и очистка памяти
+	delete chunks;
+	delete crosshair;
+	delete crosshairShader;
+
+
 	Window::terminate(); // Закрытие окна
 	return 0;
 }
