@@ -13,6 +13,7 @@
     <ClCompile Include="src\voxels\Chunk.cpp" />
     <ClCompile Include="src\graphics\voxel_renderer.cpp" />
     <ClCompile Include="src\voxels\Chunks.cpp" />
+    <ClCompile Include="src\graphics\LineBatch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\Window.h" />
@@ -26,5 +27,6 @@
     <ClInclude Include="src\voxels\Chunk.h" />
     <ClInclude Include="src\graphics\voxel_renderer.h" />
     <ClInclude Include="src\voxels\Chunks.h" />
+    <ClInclude Include="src\graphics\LineBatch.h" />
   </ItemGroup>
 </Project>

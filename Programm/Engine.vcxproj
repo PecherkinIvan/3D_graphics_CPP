@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\LineBatch.cpp" />
     <ClCompile Include="src\graphics\Mesh.cpp" />
     <ClCompile Include="src\voxels\Chunk.cpp" />
     <ClCompile Include="src\voxels\Chunks.cpp" />
@@ -157,6 +158,7 @@
     <ClCompile Include="src\graphics\voxel_renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\LineBatch.h" />
     <ClInclude Include="src\graphics\Mesh.h" />
     <ClInclude Include="src\graphics\voxel_renderer.h" />
     <ClInclude Include="src\voxels\Chunk.h" />

@@ -16,6 +16,7 @@ using namespace glm;
 #include "graphics/texture.h"
 #include "graphics/Mesh.h"
 #include "graphics/voxel_renderer.h"
+#include "graphics/LineBatch.h"
 #include "window/Window.h"
 #include "window/Events.h"
 #include "window/camera.h"
@@ -59,6 +60,13 @@ int main() {
 		Window::terminate();
 		return 1;
 	}
+	
+	Shader* linesShader = load_shader("res/linefrag.glsl", "res/linevert.glsl");
+	if (crosshairShader == nullptr) {
+		std::cerr << "failed to load crosshair shader" << std::endl;
+		Window::terminate();
+		return 1;
+	}
 
 	Texture* texture = load_texture("res/block.png");
 	if (texture == nullptr) {
@@ -73,9 +81,7 @@ int main() {
 	for (size_t i = 0; i < chunks->volume; i++)
 		meshes[i] = nullptr;
 	VoxelRenderer renderer(1024 * 1024 * 8);
-	
-
-	
+	LineBatch* lineBatch = new LineBatch(4096);
 
 	glClearColor(0.6f, 0.62f, 0.65f, 1);
 
@@ -147,11 +153,13 @@ int main() {
 			vec3 iend;
 			voxel* vox = chunks->rayCast(camera->position, camera->front, 10.0f, end, norm, iend);
 			if (vox != nullptr) {
+				lineBatch->box(iend.x + 0.5f, iend.y + 0.5f, iend.z + 0.5f, 1.005f, 1.005f, 1.005f, 0, 0, 0, 0.5f);
+
 				if (Events::jclicked(GLFW_MOUSE_BUTTON_1)) {
 					chunks->set((int)iend.x, (int)iend.y, (int)iend.z, 0);
 				}
 				if (Events::jclicked(GLFW_MOUSE_BUTTON_2)) {
-					chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), 1);
+					chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), 2);
 				}
 			}
 		}
@@ -205,6 +213,11 @@ int main() {
 		crosshairShader->use();
 		crosshair->draw(GL_LINES);
 		
+		linesShader->use();
+		linesShader->uniformMatrix("projview", camera->getProjection()* camera->getView());
+		glLineWidth(2.0f);
+		lineBatch->render();
+
 		Window::swapBuffers();
 		Events::pullEvents();
 	}
@@ -215,7 +228,9 @@ int main() {
 	delete chunks;
 	delete crosshair;
 	delete crosshairShader;
-
+	delete linesShader;
+	delete lineBatch;
+	
 
 	Window::terminate(); // Закрытие окна
 	return 0;
