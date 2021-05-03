@@ -124,6 +124,7 @@ int main() {
 			camera->position -= camera->right * delta * speed;
 		}
 
+
 		if (Events::_cursor_locked) {
 			camY += -Events::deltaY / Window::height * 2;
 			camX += -Events::deltaX / Window::height * 2;
@@ -150,7 +151,7 @@ int main() {
 					chunks->set((int)iend.x, (int)iend.y, (int)iend.z, 0);
 				}
 				if (Events::jclicked(GLFW_MOUSE_BUTTON_2)) {
-					chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), 2);
+					chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), 1);
 				}
 			}
 		}
@@ -182,7 +183,7 @@ int main() {
 				oz += 1;
 				closes[(oy * 3 + oz) * 3 + ox] = other;
 			}
-			Mesh* mesh = renderer.render(chunk, (const Chunk**)closes);
+			Mesh* mesh = renderer.render(chunk, (const Chunk**)closes, true);
 			meshes[i] = mesh;
 		}
 
