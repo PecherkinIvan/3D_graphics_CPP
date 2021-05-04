@@ -4,10 +4,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+
 /*---------GLM---------*/
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 
 using namespace glm;
 /*-------------------*/
@@ -25,16 +27,15 @@ using namespace glm;
 #include "voxels/Chunk.h"
 #include "voxels/Chunks.h"
 
+#include "files/files.h"
+
 int WIDTH = 1280; //Ширина экрана
 int HEIGHT = 720; //Высота экрана
 
 float vertices[] = {
 	// x    y
-   -0.01f,-0.01f,
-	0.01f, 0.01f,
-
-   -0.01f, 0.01f,
-	0.01f,-0.01f,
+   -0.001f, 0.0f,
+	0.001f,-0.0f,
 };
 
 int attrs[] = {
@@ -99,11 +100,11 @@ int main() {
 	float camX = 0.0f;
 	float camY = 0.0f;
 
-	float speed = 5;
+	float speed = 7;
 
 	/*=============Основной цикл игры====================*/
 	while (!Window::isShouldClose()) { 
-
+		
 		float currentTime = glfwGetTime();
 		delta = currentTime - lastTime;
 		lastTime = currentTime;
@@ -116,7 +117,25 @@ int main() {
 		if (Events::jpressed(GLFW_KEY_TAB)) {
 			Events::toogleCursor();
 		}
+		//   Сохранение & Загрузка
+		if (Events::jpressed(GLFW_KEY_F1)) {
+			unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
+			chunks->write(buffer);
+			write_binary_file("world.bin", (const char*)buffer, chunks->volume * CHUNK_VOL);
+			delete [] buffer;
+			std::cout << "world saved in " << (chunks->volume * CHUNK_VOL) << " bytes" << std::endl;
+		}
+		if (Events::jpressed(GLFW_KEY_F2)) {
+			unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
+			read_binary_file("world.bin", (char*)buffer, chunks->volume * CHUNK_VOL);
+			chunks->read(buffer);
+			delete[] buffer;
+		}
 
+		if (Events::pressed(GLFW_KEY_LEFT_SHIFT)) {
+			speed = 50;
+		}
+	
 		if (Events::pressed(GLFW_KEY_W)) {
 			camera->position += camera->front * delta * speed;
 		}
@@ -129,7 +148,8 @@ int main() {
 		if (Events::pressed(GLFW_KEY_A)) {
 			camera->position -= camera->right * delta * speed;
 		}
-
+		
+		speed = 7;
 
 		if (Events::_cursor_locked) {
 			camY += -Events::deltaY / Window::height * 2;
@@ -215,6 +235,7 @@ int main() {
 		
 		linesShader->use();
 		linesShader->uniformMatrix("projview", camera->getProjection()* camera->getView());
+		
 		glLineWidth(2.0f);
 		lineBatch->render();
 

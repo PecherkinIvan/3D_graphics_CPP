@@ -1,4 +1,8 @@
 ﻿  main.cpp
-A:\Repositories\3D_graphics_CPP\Programm\src\main.cpp(98,17): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-A:\Repositories\3D_graphics_CPP\Programm\src\main.cpp(109,21): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-  Engine.vcxproj -> A:\Repositories\3D_graphics_CPP\Programm\x64\Debug\Engine.exe
+C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\src\voxels\Chunk.h(9,12): warning C4099: voxel: имя типа, ранее отображенное с помощью "struct", теперь отображено с помощью "class"
+C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\src\voxels\voxel.h(6): message : см. объявление "voxel"
+C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\src\voxels\Chunks.h(10,12): warning C4099: voxel: имя типа, ранее отображенное с помощью "struct", теперь отображено с помощью "class"
+C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\src\voxels\Chunk.h(9): message : см. объявление "voxel"
+C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\src\main.cpp(97,17): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\src\main.cpp(108,21): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+  Engine.vcxproj -> C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\x64\Debug\Engine.exe

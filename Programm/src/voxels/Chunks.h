@@ -22,6 +22,9 @@ public:
 	voxel* get(int x, int y, int z);
 	void set(int x, int y, int z, int id);
 	voxel* rayCast(vec3 start, vec3 dir, float maxLength, vec3& end, vec3& norm, vec3& iend);
+
+	void write(unsigned char* dest);
+	void read(unsigned char* source);
 };
 
 #endif /* VOXELS_CHUNKS_H_ */
