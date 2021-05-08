@@ -78,7 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\include;$(LibraryPath)</LibraryPath>
+    <LibraryPath>A:\Repositories\3D_graphics_CPP\Programm\libs\include;C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\include;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -117,12 +117,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>A:\Repositories\3D_graphics_CPP\Programm\libs\include;C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>A:\Repositories\3D_graphics_CPP\Programm\libs\lib;C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -146,6 +146,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\lighting\LightSolver.cpp" />
+    <ClCompile Include="src\lighting\LightMap.cpp" />
     <ClCompile Include="src\files\files.cpp" />
     <ClCompile Include="src\graphics\LineBatch.cpp" />
     <ClCompile Include="src\graphics\Mesh.cpp" />
@@ -162,6 +164,8 @@
     <ClCompile Include="src\graphics\voxel_renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\lighting\LightSolver.h" />
+    <ClInclude Include="src\lighting\LightMap.h" />
     <ClInclude Include="src\files\files.h" />
     <ClInclude Include="src\graphics\LineBatch.h" />
     <ClInclude Include="src\graphics\Mesh.h" />

@@ -1,5 +1,4 @@
-#version 330
-#extension GL_ARB_separate_shader_objects : enable
+#version 330 core
 
 in vec4 a_color;
 in vec2 a_texCoord;

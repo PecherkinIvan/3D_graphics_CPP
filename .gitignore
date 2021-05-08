@@ -1,6 +1,4 @@
-/documents/*
-/programm/libs/**
-/programm/.vs/**
-/programm/Debug/**
-/programm/x64/**
 world.bin
+.vs/
+x64/
+Programm/x64/
