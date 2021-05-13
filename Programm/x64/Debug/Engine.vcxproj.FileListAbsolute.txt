@@ -1,6 +1,0 @@
-C:\OpenGL\Engine\x64\Debug\Engine.exe
-C:\OpenGL\Engine\x64\Debug\Engine.pdb
-A:\Repositories\3D_graphics_CPP\Programm\x64\Debug\Engine.exe
-A:\Repositories\3D_graphics_CPP\Programm\x64\Debug\Engine.pdb
-C:\OpenGL\Engine1\x64\Debug\Engine.exe
-C:\OpenGL\Engine1\x64\Debug\Engine.pdb

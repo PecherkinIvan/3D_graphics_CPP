@@ -1,0 +1,13 @@
+﻿  png_loading.cpp
+A:\Repositories\3D_graphics_CPP\Programm\src\loaders\png_loading.cpp(6,10): fatal error C1083: Не удается открыть файл включение: GL/glew.h: No such file or directory,
+  Shader.cpp
+A:\Repositories\3D_graphics_CPP\Programm\src\graphics\Shader.cpp(8,10): fatal error C1083: Не удается открыть файл включение: GL/glew.h: No such file or directory,
+  Events.cpp
+A:\Repositories\3D_graphics_CPP\Programm\src\window\Events.cpp(2,10): fatal error C1083: Не удается открыть файл включение: GLFW/glfw3.h: No such file or directory,
+  main.cpp
+A:\Repositories\3D_graphics_CPP\Programm\src\main.cpp(4,10): fatal error C1083: Не удается открыть файл включение: GL/glew.h: No such file or directory,
+  Window.cpp
+A:\Repositories\3D_graphics_CPP\Programm\src\window\Window.cpp(4,10): fatal error C1083: Не удается открыть файл включение: GL/glew.h: No such file or directory,
+  texture.cpp
+A:\Repositories\3D_graphics_CPP\Programm\src\graphics\texture.cpp(2,10): fatal error C1083: Не удается открыть файл включение: GL/glew.h: No such file or directory,
+  Создание кода...
