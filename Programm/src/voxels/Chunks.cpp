@@ -1,7 +1,7 @@
 #include "Chunks.h"
 #include "Chunk.h"
 #include "voxel.h"
-#include "../lighting/LightMap.h"
+#include "../lighting/Lightmap.h"
 
 #include <glm/glm.hpp>
 

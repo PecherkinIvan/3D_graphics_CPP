@@ -2,7 +2,8 @@
 #include "Mesh.h"
 #include "../voxels/Chunk.h"
 #include "../voxels/voxel.h"
-#include "../lighting/LightMap.h"
+#include "../voxels/Block.h"
+#include "../lighting/Lightmap.h"
 
 #define VERTEX_SIZE (3 + 2 + 4)
 
@@ -14,7 +15,7 @@
 
 #define LIGHT(X,Y,Z, CHANNEL) (IS_CHUNK(X,Y,Z) ? GET_CHUNK(X,Y,Z)->lightmap->get(LOCAL(X, CHUNK_W), LOCAL(Y, CHUNK_H), LOCAL(Z, CHUNK_D), (CHANNEL)) : 0)
 #define VOXEL(X,Y,Z) (GET_CHUNK(X,Y,Z)->voxels[(LOCAL(Y, CHUNK_H) * CHUNK_D + LOCAL(Z, CHUNK_D)) * CHUNK_W + LOCAL(X, CHUNK_W)])
-#define IS_BLOCKED(X,Y,Z) ((!IS_CHUNK(X, Y, Z)) || VOXEL(X, Y, Z).id)
+#define IS_BLOCKED(X,Y,Z,GROUP) ((!IS_CHUNK(X, Y, Z)) || Block::blocks[VOXEL(X, Y, Z).id]->drawGroup == (GROUP))
 
 #define VERTEX(INDEX, X,Y,Z, U,V, R,G,B,S) buffer[INDEX+0] = (X);\
 								  buffer[INDEX+1] = (Y);\
@@ -27,6 +28,11 @@
 								  buffer[INDEX+8] = (S);\
 								  INDEX += VERTEX_SIZE;
 
+
+#define SETUP_UV(INDEX) float u1 = ((INDEX) % 16) * uvsize;\
+				float v1 = 1-((1 + (INDEX) / 16) * uvsize);\
+				float u2 = u1 + uvsize;\
+				float v2 = v1 + uvsize;
 
 int chunk_attrs[] = { 3,2,4, 0 };
 
@@ -52,13 +58,14 @@ Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks) {
 
 				float l;
 				float uvsize = 1.0f / 16.0f;
-				float u1 = (id % 16) * uvsize;
-				float v1 = 1 - ((1 + id / 16) * uvsize);
-				float u2 = u1 + uvsize;
-				float v2 = v1 + uvsize;
 
-				if (!IS_BLOCKED(x, y + 1, z)) {
+				Block* block = Block::blocks[id];
+				unsigned char group = block->drawGroup;
+
+				if (!IS_BLOCKED(x, y + 1, z, group)) {
 					l = 1.0f;
+
+					SETUP_UV(block->textureFaces[3]);
 
 					float lr = LIGHT(x, y + 1, z, 0) / 15.0f;
 					float lg = LIGHT(x, y + 1, z, 1) / 15.0f;
@@ -93,8 +100,10 @@ Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks) {
 					VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u1, v2, lr2, lg2, lb2, ls2);
 					VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u1, v1, lr3, lg3, lb3, ls3);
 				}
-				if (!IS_BLOCKED(x, y - 1, z)) {
+				if (!IS_BLOCKED(x, y - 1, z, group)) {
 					l = 0.75f;
+
+					SETUP_UV(block->textureFaces[2]);
 
 					float lr = LIGHT(x, y - 1, z, 0) / 15.0f;
 					float lg = LIGHT(x, y - 1, z, 1) / 15.0f;
@@ -130,8 +139,10 @@ Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks) {
 					VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u2, v2, lr1, lg1, lb1, ls1);
 				}
 
-				if (!IS_BLOCKED(x + 1, y, z)) {
+				if (!IS_BLOCKED(x + 1, y, z, group)) {
 					l = 0.95f;
+
+					SETUP_UV(block->textureFaces[1]);
 
 					float lr = LIGHT(x + 1, y, z, 0) / 15.0f;
 					float lg = LIGHT(x + 1, y, z, 1) / 15.0f;
@@ -166,8 +177,10 @@ Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks) {
 					VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u1, v2, lr2, lg2, lb2, ls2);
 					VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u1, v1, lr3, lg3, lb3, ls3);
 				}
-				if (!IS_BLOCKED(x - 1, y, z)) {
+				if (!IS_BLOCKED(x - 1, y, z, group)) {
 					l = 0.85f;
+
+					SETUP_UV(block->textureFaces[0]);
 
 					float lr = LIGHT(x - 1, y, z, 0) / 15.0f;
 					float lg = LIGHT(x - 1, y, z, 1) / 15.0f;
@@ -203,8 +216,10 @@ Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks) {
 					VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u2, v2, lr1, lg1, lb1, ls1);
 				}
 
-				if (!IS_BLOCKED(x, y, z + 1)) {
+				if (!IS_BLOCKED(x, y, z + 1, group)) {
 					l = 0.9f;
+
+					SETUP_UV(block->textureFaces[5]);
 
 					float lr = LIGHT(x, y, z + 1, 0) / 15.0f;
 					float lg = LIGHT(x, y, z + 1, 1) / 15.0f;
@@ -239,8 +254,10 @@ Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks) {
 					VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u2, v1, lr3, lg3, lb3, ls3);
 					VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u2, v2, lr1, lg1, lb1, ls1);
 				}
-				if (!IS_BLOCKED(x, y, z - 1)) {
+				if (!IS_BLOCKED(x, y, z - 1, group)) {
 					l = 0.8f;
+
+					SETUP_UV(block->textureFaces[4]);
 
 					float lr = LIGHT(x, y, z - 1, 0) / 15.0f;
 					float lg = LIGHT(x, y, z - 1, 1) / 15.0f;

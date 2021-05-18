@@ -1,6 +1,6 @@
 #include "Chunk.h"
 #include "voxel.h"
-#include "../lighting/LightMap.h"
+#include "../lighting/Lightmap.h"
 #include <math.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/noise.hpp>
@@ -19,6 +19,8 @@ Chunk::Chunk(int xpos, int ypos, int zpos) : x(xpos), y(ypos), z(zpos) {
 				int real_y = y + this->y * CHUNK_H;
 				int id = glm::perlin(glm::vec3(real_x * 0.0125f, real_y * 0.0125f, real_z * 0.0125f)) > 0.1f;//*/real_y <= (height) * 60 + 30;
 				if (real_y <= 2)
+					id = 1;
+				if (real_y == 3)
 					id = 2;
 				//srand(real_x*62345+real_y*43634+real_z*742);
 				//if (real_y > 10 && rand() % 3000 == 0)

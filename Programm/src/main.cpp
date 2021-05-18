@@ -18,15 +18,21 @@ using namespace glm;
 #include "graphics/Mesh.h"
 #include "graphics/voxel_renderer.h"
 #include "graphics/LineBatch.h"
+
 #include "window/Window.h"
 #include "window/Events.h"
 #include "window/camera.h"
+
 #include "loaders/png_loading.h"
+
 #include "voxels/voxel.h"
 #include "voxels/Chunk.h"
 #include "voxels/Chunks.h"
+#include "voxels/Block.h"
+
 #include "lighting/LightSolver.h"
 #include "lighting/LightMap.h"
+#include "lighting/Lighting.h"
 
 
 #include "files/files.h"
@@ -50,7 +56,7 @@ int main() {
 
 	glClearColor(0.6f, 0.62f, 0.65f, 1); // Цвет фона RGBA
 
-	Shader* shader = load_shader("res/frag.glsl", "res/vert.glsl"); // Загрузка фрагментного и вершинного шейдера
+	Shader* shader = load_shader("res/vert.glsl", "res/frag.glsl"); // Загрузка фрагментного и вершинного шейдера
 	if (shader == nullptr) {
 		std::cerr << "failed to load shader" << std::endl;
 		Window::terminate(); //Закрытие окна
@@ -79,7 +85,79 @@ int main() {
 		return 1;
 	}
 
-	Chunks* chunks = new Chunks(10, 2, 10); // НЕ ДЕЛАТЬ СЛИШКОМ БОЛЬШИМ
+	{
+		// AIR
+		Block* block = new Block(0, 0);
+		block->drawGroup = 1;
+		block->lightPassing = true;
+		Block::blocks[block->id] = block;
+
+		// STONE
+		block = new Block(1, 2);
+		Block::blocks[block->id] = block;
+
+		// GRASS
+		block = new Block(2, 4);
+		block->textureFaces[2] = 2;
+		block->textureFaces[3] = 1;
+		Block::blocks[block->id] = block;
+
+		// GLASS
+		block = new Block(3, 5);
+		block->drawGroup = 2;
+		block->lightPassing = true;
+		Block::blocks[block->id] = block;
+
+		// GLASS
+		block = new Block(4, 6);
+		Block::blocks[block->id] = block;
+
+		// LAMP WHITE
+		block = new Block(5, 3);
+		block->emission[0] = 15;
+		block->emission[1] = 15;
+		block->emission[2] = 15;
+		Block::blocks[block->id] = block;
+
+		// LAMP RED
+		block = new Block(6, 3);
+		block->emission[0] = 10;
+		block->emission[1] = 0;
+		block->emission[2] = 0;
+		Block::blocks[block->id] = block;
+
+		// LAMP GREEN
+		block = new Block(7, 3);
+		block->emission[0] = 0;
+		block->emission[1] = 10;
+		block->emission[2] = 0;
+		Block::blocks[block->id] = block;
+
+		// LAMP BLUE
+		block = new Block(8, 3);
+		block->emission[0] = 0;
+		block->emission[1] = 0;
+		block->emission[2] = 10;
+		Block::blocks[block->id] = block;
+
+		// LAMP YELLOW
+		block = new Block(9, 3);
+		block->emission[0] = 10;
+		block->emission[1] = 10;
+		block->emission[2] = 0;
+		Block::blocks[block->id] = block;
+
+		// LAMP PURPULE
+		block = new Block(10, 3);
+		block->emission[0] = 10;
+		block->emission[1] = 0;
+		block->emission[2] = 10;
+		Block::blocks[block->id] = block;
+
+		
+	}
+
+	Chunks* chunks = new Chunks(4, 1, 4); // НЕ ДЕЛАТЬ СЛИШКОМ БОЛЬШИМ
 											// 8 2 8 ОПТИМАЛЬНО
 											// 10 2 10 уже очень ДОЛГО грузит
 	Mesh** meshes = new Mesh * [chunks->volume];
@@ -87,6 +165,8 @@ int main() {
 		meshes[i] = nullptr;
 	VoxelRenderer renderer(1024 * 1024 * 8);
 	LineBatch* lineBatch = new LineBatch(4096);
+
+	Lighting::initialize(chunks);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1);
 
@@ -96,7 +176,7 @@ int main() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	Mesh* crosshair = new Mesh(vertices, 4, attrs);
-	Camera* camera = new Camera(vec3(0, 0, 20), radians(90.0f));
+	Camera* camera = new Camera(vec3(5, 5, 5), radians(90.0f));
 
 	float lastTime = glfwGetTime();
 	float delta = 0.0f;
@@ -107,63 +187,9 @@ int main() {
 	float speed = 15;
 
 	int choosenBlock = 1;
+	int categoryBlock = 1;
 
-	LightSolver* solverR = new LightSolver(chunks, 0);
-	LightSolver* solverG = new LightSolver(chunks, 1);
-	LightSolver* solverB = new LightSolver(chunks, 2);
-	LightSolver* solverS = new LightSolver(chunks, 3);
-
-	for (int y = 0; y < chunks->h * CHUNK_H; y++) {
-		for (int z = 0; z < chunks->d * CHUNK_D; z++) {
-			for (int x = 0; x < chunks->w * CHUNK_W; x++) {
-				voxel* vox = chunks->get(x, y, z);
-				if (vox->id == 3) {
-					solverR->add(x, y, z, 15);
-					solverG->add(x, y, z, 15);
-					solverB->add(x, y, z, 15);
-				}
-			}
-		}
-	}
-
-	for (int z = 0; z < chunks->d * CHUNK_D; z++) {
-		for (int x = 0; x < chunks->w * CHUNK_W; x++) {
-			for (int y = chunks->h * CHUNK_H - 1; y >= 0; y--) {
-				voxel* vox = chunks->get(x, y, z);
-				if (vox->id != 0) {
-					break;
-				}
-				chunks->getChunkByVoxel(x, y, z)->lightmap->setS(x % CHUNK_W, y % CHUNK_H, z % CHUNK_D, 0xF);
-			}
-		}
-	}
-
-	for (int z = 0; z < chunks->d * CHUNK_D; z++) {
-		for (int x = 0; x < chunks->w * CHUNK_W; x++) {
-			for (int y = chunks->h * CHUNK_H - 1; y >= 0; y--) {
-				voxel* vox = chunks->get(x, y, z);
-				if (vox->id != 0) {
-					break;
-				}
-				if (
-					chunks->getLight(x - 1, y, z, 3) == 0 ||
-					chunks->getLight(x + 1, y, z, 3) == 0 ||
-					chunks->getLight(x, y - 1, z, 3) == 0 ||
-					chunks->getLight(x, y + 1, z, 3) == 0 ||
-					chunks->getLight(x, y, z - 1, 3) == 0 ||
-					chunks->getLight(x, y, z + 1, 3) == 0
-					) {
-					solverS->add(x, y, z);
-				}
-				chunks->getChunkByVoxel(x, y, z)->lightmap->setS(x % CHUNK_W, y % CHUNK_H, z % CHUNK_D, 0xF);
-			}
-		}
-	}
-
-	solverR->solve();
-	solverG->solve();
-	solverB->solve();
-	solverS->solve();
+	Lighting::onWorldLoaded();
 
 	/*=============Основной цикл игры====================*/
 	while (!Window::isShouldClose()) {
@@ -178,11 +204,32 @@ int main() {
 			Events::toogleCursor();
 		}
 
-		for (int i = 1; i < 4; i++) {
-			if (Events::jpressed(GLFW_KEY_0 + i)) {
-				choosenBlock = i;
+		if (Events::jpressed(GLFW_KEY_B)) {
+			categoryBlock = 1;
+		}
+
+		if (Events::jpressed(GLFW_KEY_L)) {
+			categoryBlock = 2;
+		}
+
+		if (categoryBlock == 1) {
+			for (int i = 1; i < 5; i++) {
+				if (Events::jpressed(GLFW_KEY_0 + i)) {
+					choosenBlock = i;
+				}
 			}
 		}
+
+		if (categoryBlock == 2) {
+			for (int i = 1; i < 7; i++) {
+				if (Events::jpressed(GLFW_KEY_0 + i)) {
+					choosenBlock = i+4;
+				}
+			}
+		}
+
+		
+
 		if (Events::jpressed(GLFW_KEY_F1)) {
 			unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
 			chunks->write(buffer);
@@ -197,6 +244,10 @@ int main() {
 			delete[] buffer;
 		}
 
+		if (Events::pressed(GLFW_KEY_LEFT_SHIFT)) {
+			speed = 30;
+		}
+
 		if (Events::pressed(GLFW_KEY_W)) {
 			camera->position += camera->front * delta * speed;
 		}
@@ -209,6 +260,14 @@ int main() {
 		if (Events::pressed(GLFW_KEY_A)) {
 			camera->position -= camera->right * delta * speed;
 		}
+		if (Events::pressed(GLFW_KEY_SPACE)) {
+			camera->position += vec3(0, 1, 0) * delta * speed;
+		}
+		if (Events::pressed(GLFW_KEY_LEFT_CONTROL)) {
+			camera->position -= vec3(0, 1, 0) * delta * speed;
+		}
+
+		speed = 7;
 
 		if (Events::_cursor_locked) {
 			camY += -Events::deltaY / Window::height * 2;
@@ -238,62 +297,14 @@ int main() {
 					int y = (int)iend.y;
 					int z = (int)iend.z;
 					chunks->set(x, y, z, 0);
-
-					solverR->remove(x, y, z);
-					solverG->remove(x, y, z);
-					solverB->remove(x, y, z);
-
-					solverR->solve();
-					solverG->solve();
-					solverB->solve();
-
-					if (chunks->getLight(x, y + 1, z, 3) == 0xF) {
-						for (int i = y; i >= 0; i--) {
-							if (chunks->get(x, i, z)->id != 0)
-								break;
-							solverS->add(x, i, z, 0xF);
-						}
-					}
-
-					solverR->add(x, y + 1, z); solverG->add(x, y + 1, z); solverB->add(x, y + 1, z); solverS->add(x, y + 1, z);
-					solverR->add(x, y - 1, z); solverG->add(x, y - 1, z); solverB->add(x, y - 1, z); solverS->add(x, y - 1, z);
-					solverR->add(x + 1, y, z); solverG->add(x + 1, y, z); solverB->add(x + 1, y, z); solverS->add(x + 1, y, z);
-					solverR->add(x - 1, y, z); solverG->add(x - 1, y, z); solverB->add(x - 1, y, z); solverS->add(x - 1, y, z);
-					solverR->add(x, y, z + 1); solverG->add(x, y, z + 1); solverB->add(x, y, z + 1); solverS->add(x, y, z + 1);
-					solverR->add(x, y, z - 1); solverG->add(x, y, z - 1); solverB->add(x, y, z - 1); solverS->add(x, y, z - 1);
-
-					solverR->solve();
-					solverG->solve();
-					solverB->solve();
-					solverS->solve();
+					Lighting::onBlockSet(x, y, z, 0);
 				}
 				if (Events::jclicked(GLFW_MOUSE_BUTTON_2)) {
 					int x = (int)(iend.x) + (int)(norm.x);
 					int y = (int)(iend.y) + (int)(norm.y);
 					int z = (int)(iend.z) + (int)(norm.z);
 					chunks->set(x, y, z, choosenBlock);
-					solverR->remove(x, y, z);
-					solverG->remove(x, y, z);
-					solverB->remove(x, y, z);
-					solverS->remove(x, y, z);
-					for (int i = y - 1; i >= 0; i--) {
-						solverS->remove(x, i, z);
-						if (i == 0 || chunks->get(x, i - 1, z)->id != 0) {
-							break;
-						}
-					}
-					solverR->solve();
-					solverG->solve();
-					solverB->solve();
-					solverS->solve();
-					if (choosenBlock == 3) {
-						solverR->add(x, y, z, 10);
-						solverG->add(x, y, z, 10);
-						solverB->add(x, y, z, 0);
-						solverR->solve();
-						solverG->solve();
-						solverB->solve();
-					}
+					Lighting::onBlockSet(x, y, z, choosenBlock);
 				}
 			}
 		}
@@ -358,10 +369,7 @@ int main() {
 	}
 		/*=========Конец основного цикла игры==============*/
 
-		delete solverS;
-		delete solverB;
-		delete solverG;
-		delete solverR;
+		Lighting::finalize();
 
 		delete shader;
 		delete texture;
