@@ -79,7 +79,9 @@ int main() {
 		return 1;
 	}
 
-	Chunks* chunks = new Chunks(16, 16, 16);
+	Chunks* chunks = new Chunks(10, 2, 10); // ÍÅ ÄÅËÀÒÜ ÑËÈØÊÎÌ ÁÎËÜØÈÌ
+											// 8 2 8 ÎÏÒÈÌÀËÜÍÎ
+											// 10 2 10 óæå î÷åíü ÄÎËÃÎ ãðóçèò
 	Mesh** meshes = new Mesh * [chunks->volume];
 	for (size_t i = 0; i < chunks->volume; i++)
 		meshes[i] = nullptr;
