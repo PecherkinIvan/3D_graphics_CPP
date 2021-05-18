@@ -1,6 +1,0 @@
-﻿  main.cpp
-A:\Repositories\3D_graphics_CPP\Programm\src\voxels\Chunk.h(9,12): warning C4099: voxel: имя типа, ранее отображенное с помощью "struct", теперь отображено с помощью "class"
-A:\Repositories\3D_graphics_CPP\Programm\src\voxels\voxel.h(6): message : см. объявление "voxel"
-A:\Repositories\3D_graphics_CPP\Programm\src\main.cpp(79,17): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-A:\Repositories\3D_graphics_CPP\Programm\src\main.cpp(90,21): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-  Engine.vcxproj -> A:\Repositories\3D_graphics_CPP\Programm\x64\Debug\Engine.exe
