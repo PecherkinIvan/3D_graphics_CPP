@@ -82,6 +82,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <PublicIncludeDirectories>A:\Repositories\3D_graphics_CPP\Programm\libs\include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <LibraryPath>A:\Repositories\3D_graphics_CPP\Programm\libs\include;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -134,14 +136,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>A:\Repositories\3D_graphics_CPP\Programm\libs\include;C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>A:\Repositories\3D_graphics_CPP\Programm\libs\lib;C:\Users\peche\OneDrive\Рабочий стол\GIT\3D_graphics_CPP\Programm\libs\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -155,6 +157,7 @@
     <ClCompile Include="src\voxels\Block.cpp" />
     <ClCompile Include="src\voxels\Chunk.cpp" />
     <ClCompile Include="src\voxels\Chunks.cpp" />
+    <ClCompile Include="src\voxels\Collision.cpp" />
     <ClCompile Include="src\window\camera.cpp" />
     <ClCompile Include="src\loaders\png_loading.cpp" />
     <ClCompile Include="src\graphics\Shader.cpp" />
@@ -176,6 +179,7 @@
     <ClInclude Include="src\voxels\Block.h" />
     <ClInclude Include="src\voxels\Chunk.h" />
     <ClInclude Include="src\voxels\Chunks.h" />
+    <ClInclude Include="src\voxels\Collision.h" />
     <ClInclude Include="src\window\camera.h" />
     <ClInclude Include="src\loaders\png_loading.h" />
     <ClInclude Include="src\graphics\Shader.h" />

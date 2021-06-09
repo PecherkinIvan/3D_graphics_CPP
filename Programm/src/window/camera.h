@@ -11,9 +11,13 @@ public:
 	vec3 up;
 	vec3 right;
 
+	vec3 front2;
+
 	vec3 position;
 	float fov;
 	mat4 rotation;
+	mat4 rotation2;
+	float rotZ;
 	Camera(vec3 position, float fov);
 
 	void rotate(float x, float y, float z);

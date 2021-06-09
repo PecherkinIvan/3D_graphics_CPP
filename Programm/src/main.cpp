@@ -2,7 +2,7 @@
 				      
 #define GLEW_STATIC  
 #include <gl/glew.h>
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
 /*---------GLM---------*/
 #include <glm/glm.hpp>
@@ -29,6 +29,7 @@ using namespace glm;
 #include "voxels/Chunk.h"
 #include "voxels/Chunks.h"
 #include "voxels/Block.h"
+#include "voxels/Collision.h"
 
 #include "lighting/LightSolver.h"
 #include "lighting/LightMap.h"
@@ -154,10 +155,17 @@ int main() {
 		block->emission[2] = 10;
 		Block::blocks[block->id] = block;
 
+		// LAMP PURPULE
+		block = new Block(11, 3);
+		block->emission[0] = 10;
+		block->emission[1] = 5;
+		block->emission[2] = 5;
+		Block::blocks[block->id] = block;
+
 		
 	}
 
-	Chunks* chunks = new Chunks(4, 1, 4); // ÍÅ ÄÅËÀÒÜ ÑËÈØÊÎÌ ÁÎËÜØÈÌ
+	Chunks* chunks = new Chunks(8, 2, 8); // ÍÅ ÄÅËÀÒÜ ÑËÈØÊÎÌ ÁÎËÜØÈÌ
 											// 8 2 8 ÎÏÒÈÌÀËÜÍÎ
 											// 10 2 10 óæå î÷åíü ÄÎËÃÎ ãðóçèò
 	Mesh** meshes = new Mesh * [chunks->volume];
@@ -188,6 +196,7 @@ int main() {
 
 	int choosenBlock = 1;
 	int categoryBlock = 1;
+	int gamemode = 1;
 
 	Lighting::onWorldLoaded();
 
@@ -206,11 +215,14 @@ int main() {
 
 		if (Events::jpressed(GLFW_KEY_B)) {
 			categoryBlock = 1;
+			choosenBlock = 1;
 		}
 
 		if (Events::jpressed(GLFW_KEY_L)) {
 			categoryBlock = 2;
+			choosenBlock = 5;
 		}
+
 
 		if (categoryBlock == 1) {
 			for (int i = 1; i < 5; i++) {
@@ -221,7 +233,7 @@ int main() {
 		}
 
 		if (categoryBlock == 2) {
-			for (int i = 1; i < 7; i++) {
+			for (int i = 1; i < 8; i++) {
 				if (Events::jpressed(GLFW_KEY_0 + i)) {
 					choosenBlock = i+4;
 				}
@@ -244,30 +256,97 @@ int main() {
 			delete[] buffer;
 		}
 
-		if (Events::pressed(GLFW_KEY_LEFT_SHIFT)) {
-			speed = 30;
+		
+
+		if (gamemode == 1)
+		{
+			speed = 7;
+
+			if (Events::pressed(GLFW_KEY_LEFT_SHIFT)) {
+				speed = 30;
+			}
+
+			if (Events::pressed(GLFW_KEY_LEFT_ALT)) {
+				speed = 1;
+			}
+
+			if (Events::pressed(GLFW_KEY_W)) {
+				camera->position += camera->front * delta * speed;
+			}
+			if (Events::pressed(GLFW_KEY_S)) {
+				camera->position -= camera->front * delta * speed;
+			}
+			if (Events::pressed(GLFW_KEY_D)) {
+				camera->position += camera->right * delta * speed;
+			}
+			if (Events::pressed(GLFW_KEY_A)) {
+				camera->position -= camera->right * delta * speed;
+			}
+			if (Events::pressed(GLFW_KEY_SPACE)) {
+				camera->position += vec3(0, 1, 0) * delta * speed;
+			}
+			if (Events::pressed(GLFW_KEY_LEFT_CONTROL)) {
+				camera->position -= vec3(0, 1, 0) * delta * speed;
+			}
+
+			speed = 7;
 		}
 
-		if (Events::pressed(GLFW_KEY_W)) {
-			camera->position += camera->front * delta * speed;
-		}
-		if (Events::pressed(GLFW_KEY_S)) {
-			camera->position -= camera->front * delta * speed;
-		}
-		if (Events::pressed(GLFW_KEY_D)) {
-			camera->position += camera->right * delta * speed;
-		}
-		if (Events::pressed(GLFW_KEY_A)) {
-			camera->position -= camera->right * delta * speed;
-		}
-		if (Events::pressed(GLFW_KEY_SPACE)) {
-			camera->position += vec3(0, 1, 0) * delta * speed;
-		}
-		if (Events::pressed(GLFW_KEY_LEFT_CONTROL)) {
-			camera->position -= vec3(0, 1, 0) * delta * speed;
-		}
+		if (gamemode == 0) {
+		
+			speed = 4;
 
-		speed = 7;
+			if (voxel* coll = collision::getCollision(chunks, camera, vec3(0, -1.7f, 0))) {
+				std::cout << "Down: true" << std::endl;
+			}
+			else {
+				camera->position -= vec3(0, 1, 0) * delta * speed;
+			}
+				
+			if (Events::pressed(GLFW_KEY_W)) {
+				voxel* coll = collision::getCollision(chunks, camera, vec3(0, 0, 0.5f));
+				if (coll != nullptr)
+					std::cout << "Front: true" << std::endl;
+				else
+					camera->position += camera->front2 * delta * speed;
+			}
+			if (Events::pressed(GLFW_KEY_S)) {
+				voxel* coll = collision::getCollision(chunks, camera, vec3(0, 0, -0.5f));
+				if (coll != nullptr)
+					std::cout << "Front: true" << std::endl;
+				else
+					camera->position -= camera->front2 * delta * speed;
+			}
+			if (Events::pressed(GLFW_KEY_D)) {
+				camera->position += camera->right * delta * speed;
+			}
+			if (Events::pressed(GLFW_KEY_A)) {
+				camera->position -= camera->right * delta * speed;
+			}
+			if (Events::pressed(GLFW_KEY_SPACE)) {
+				if (voxel* coll1 = collision::getCollision(chunks, camera, vec3(0, -1.7f, 0))) {
+					voxel* coll2 = collision::getCollision(chunks, camera, vec3(0, 0.3f, 0));
+					if (coll2 != nullptr)
+						std::cout << "Up: true" << std::endl;
+					else
+					{
+						camera->position += vec3(0, 1, 0) * delta * (speed * 20);
+					}
+						
+				}		
+			}
+			if (Events::pressed(GLFW_KEY_LEFT_CONTROL)) {
+
+				voxel* coll = collision::getCollision(chunks, camera, vec3(0, -1.7f, 0));
+				if (coll != nullptr)
+					std::cout << "Down: true" << std::endl;
+				else
+					camera->position -= vec3(0, 1, 0) * delta * speed;
+			}
+
+			speed = 4;
+		}
+		
 
 		if (Events::_cursor_locked) {
 			camY += -Events::deltaY / Window::height * 2;
@@ -282,7 +361,10 @@ int main() {
 
 			camera->rotation = mat4(1.0f);
 			camera->rotate(camY, camX, 0);
+			
 		}
+
+		
 
 		{
 			vec3 end;
