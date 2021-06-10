@@ -1,20 +1,14 @@
-#version 330
-#extension GL_ARB_separate_shader_objects : enable
+#version 330 core
 
+in vec4 a_color;
+in vec2 a_texCoord;
+out vec4 f_color;
 
-layout (location = 0) in vec3 v_position;
-layout (location = 1) in vec2 v_texCoord;
-layout (location = 2) in float v_light;
-
-
-out vec4 a_color;
-out vec2 a_texCoord;
-
-uniform mat4 model;
-uniform mat4 projview;
+uniform sampler2D u_texture0;
 
 void main(){
-	a_color = vec4(v_light, v_light, v_light, 1.0f);
-	a_texCoord = v_texCoord;
-	gl_Position = projview * model * vec4(v_position, 1.0);
+	vec4 tex_color = texture(u_texture0, a_texCoord);
+	if (tex_color.a < 0.5)
+		discard;
+	f_color = a_color * tex_color;
 }

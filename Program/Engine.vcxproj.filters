@@ -15,6 +15,11 @@
     <ClCompile Include="src\voxels\Chunks.cpp" />
     <ClCompile Include="src\graphics\LineBatch.cpp" />
     <ClCompile Include="src\files\files.cpp" />
+    <ClCompile Include="src\lighting\LightMap.cpp" />
+    <ClCompile Include="src\lighting\LightSolver.cpp" />
+    <ClCompile Include="src\voxels\Block.cpp" />
+    <ClCompile Include="src\lighting\Lighting.cpp" />
+    <ClCompile Include="src\voxels\Collision.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\Window.h" />
@@ -30,5 +35,10 @@
     <ClInclude Include="src\voxels\Chunks.h" />
     <ClInclude Include="src\graphics\LineBatch.h" />
     <ClInclude Include="src\files\files.h" />
+    <ClInclude Include="src\lighting\LightMap.h" />
+    <ClInclude Include="src\lighting\LightSolver.h" />
+    <ClInclude Include="src\voxels\Block.h" />
+    <ClInclude Include="src\lighting\Lighting.h" />
+    <ClInclude Include="src\voxels\Collision.h" />
   </ItemGroup>
 </Project>

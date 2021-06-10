@@ -1,6 +1,7 @@
 #include "Chunks.h"
 #include "Chunk.h"
 #include "voxel.h"
+#include "../lighting/Lightmap.h"
 
 #include <glm/glm.hpp>
 
@@ -45,6 +46,34 @@ voxel* Chunks::get(int x, int y, int z) {
 	int ly = y - cy * CHUNK_H;
 	int lz = z - cz * CHUNK_D;
 	return &chunk->voxels[(ly * CHUNK_D + lz) * CHUNK_W + lx];
+}
+
+unsigned char Chunks::getLight(int x, int y, int z, int channel) {
+	int cx = x / CHUNK_W;
+	int cy = y / CHUNK_H;
+	int cz = z / CHUNK_D;
+	if (x < 0) cx--;
+	if (y < 0) cy--;
+	if (z < 0) cz--;
+	if (cx < 0 || cy < 0 || cz < 0 || cx >= w || cy >= h || cz >= d)
+		return 0;
+	Chunk* chunk = chunks[(cy * d + cz) * w + cx];
+	int lx = x - cx * CHUNK_W;
+	int ly = y - cy * CHUNK_H;
+	int lz = z - cz * CHUNK_D;
+	return chunk->lightmap->get(lx, ly, lz, channel);
+}
+
+Chunk* Chunks::getChunkByVoxel(int x, int y, int z) {
+	int cx = x / CHUNK_W;
+	int cy = y / CHUNK_H;
+	int cz = z / CHUNK_D;
+	if (x < 0) cx--;
+	if (y < 0) cy--;
+	if (z < 0) cz--;
+	if (cx < 0 || cy < 0 || cz < 0 || cx >= w || cy >= h || cz >= d)
+		return nullptr;
+	return chunks[(cy * d + cz) * w + cx];
 }
 
 Chunk* Chunks::getChunk(int x, int y, int z) {
@@ -177,7 +206,6 @@ void Chunks::write(unsigned char* dest) {
 			dest[index] = chunk->voxels[j].id;
 		}
 	}
-		
 }
 
 void Chunks::read(unsigned char* source) {

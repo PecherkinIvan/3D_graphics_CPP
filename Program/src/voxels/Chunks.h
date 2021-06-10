@@ -19,7 +19,9 @@ public:
 	~Chunks();
 
 	Chunk* getChunk(int x, int y, int z);
+	Chunk* getChunkByVoxel(int x, int y, int z);
 	voxel* get(int x, int y, int z);
+	unsigned char getLight(int x, int y, int z, int channel);
 	void set(int x, int y, int z, int id);
 	voxel* rayCast(vec3 start, vec3 dir, float maxLength, vec3& end, vec3& norm, vec3& iend);
 

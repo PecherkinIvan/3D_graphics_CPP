@@ -1,8 +1,9 @@
 #include "LightSolver.h"
-#include "LightMap.h"
+#include "Lightmap.h"
 #include "../voxels/Chunks.h"
 #include "../voxels/Chunk.h"
 #include "../voxels/voxel.h"
+#include "../voxels/Block.h"
 
 LightSolver::LightSolver(Chunks* chunks, int channel) : chunks(chunks), channel(channel) {
 }
@@ -104,7 +105,8 @@ void LightSolver::solve() {
 			if (chunk) {
 				int light = chunks->getLight(x, y, z, channel);
 				voxel* v = chunks->get(x, y, z);
-				if (v->id == 0 && light + 2 <= entry.light) {
+				Block* block = Block::blocks[v->id];
+				if (block->lightPassing && light + 2 <= entry.light) {
 					chunk->lightmap->set(x - chunk->x * CHUNK_W, y - chunk->y * CHUNK_H, z - chunk->z * CHUNK_D, channel, entry.light - 1);
 					chunk->modified = true;
 					lightentry nentry;

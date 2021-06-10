@@ -13,7 +13,7 @@ public:
 	VoxelRenderer(size_t capacity);
 	~VoxelRenderer();
 
-	Mesh* render(Chunk* chunk, const Chunk** chunks, bool ambientOcclusion);
+	Mesh* render(Chunk* chunk, const Chunk** chunks);
 };
 
 #endif /* GRAPHICS_VOXELRENDERER_H_ */
